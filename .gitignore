@@ -1,0 +1,4 @@
+dataset/datasets/**
+.cs5874_venv/**
+*.pyc
+__pycache__/
