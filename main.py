@@ -37,12 +37,15 @@ def get_args():
     parser.add_argument('--distill_lr', default = 0.005, type=float)
     parser.add_argument('--weight_proj', default = 0.2, type=float) 
     parser.add_argument('--classes', nargs="+", default=["carpet", "leather"])
+    parser.add_argument('--fusion',default='sum',choices=['sum', 'mean', 'max', 'mul', 'a'],type=str,help='Fusion rule for multi-scale anomaly maps')
     pars = parser.parse_args()
     return pars
 
 def train(_class_, pars):
     print(_class_)
-
+    
+    print(f'Using fusion mode: {pars.fusion}')
+    
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     data_transform, gt_transform = get_data_transforms(pars.image_size, pars.image_size)
@@ -204,6 +207,7 @@ def train(_class_, pars):
             history_infor['auroc_px'] = best_auroc_px
             history_infor['aupro_px'] = best_aupro_px
             history_infor['epoch'] = best_epoch
+            history_infor['fusion_mode'] = pars.fusion
             with open(os.path.join(pars.save_folder + '/' + _class_, f'history.json'), 'w') as f:
                 json.dump(history_infor, f)
     return best_auroc_sp, best_auroc_px, best_aupro_px
@@ -214,6 +218,7 @@ def train(_class_, pars):
 if __name__ == '__main__':
     pars = get_args()
     print('Training with classes: ', pars.classes)
+    print('Fusion mode: ', pars.fusion)
     all_classes = [ 'carpet','grid','leather','tile','wood','bottle','cable','capsule','hazelnut','metal_nut','pill','screw','toothbrush','transistor','zipper']
     setup_seed(111)
     metrics = {'class': [], 'AUROC_sample':[], 'AUROC_pixel': [], 'AUPRO_pixel': []}
