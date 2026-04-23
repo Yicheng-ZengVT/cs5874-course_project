@@ -13,3 +13,4 @@ scipy==1.7.3
 torch==1.10.1+cu102
 torchvision==0.14.1
 tqdm==4.65.0
+numba==0.60.0
