@@ -40,13 +40,8 @@ def get_args():
     parser.add_argument('--distill_lr', default=0.005, type=float)
     parser.add_argument('--weight_proj', default=0.2, type=float)
     parser.add_argument('--classes', nargs="+", default=["carpet", "leather"])
-    parser.add_argument(
-        '--fusion',
-        default='sum',
-        choices=['sum', 'mean', 'max', 'mul', 'a'],
-        type=str,
-        help='Fusion rule for multi-scale anomaly maps'
-    )
+    parser.add_argument('--fusion',default='sum',choices=['sum', 'mean', 'max', 'mul', 'a'],type=str,help='Fusion rule for multi-scale anomaly maps')
+    parser.add_argument('--data_root',type=str,required=True,help='Path to MVTec root directory')
     pars = parser.parse_args()
     return pars
 
@@ -54,13 +49,14 @@ def get_args():
 def train(_class_, pars):
     print(_class_)
     print(f'Using fusion mode: {pars.fusion}')
+    print(f'Data root: {pars.data_root}')
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     data_transform, gt_transform = get_data_transforms(pars.image_size, pars.image_size)
 
-    train_path = '/content/' + _class_ + '/train'
-    test_path = '/content/' + _class_
+    train_path = os.path.join(pars.data_root, _class_, 'train')
+    test_path = os.path.join(pars.data_root, _class_)
 
     if not os.path.exists(pars.save_folder + '/' + _class_):
         os.makedirs(pars.save_folder + '/' + _class_)
