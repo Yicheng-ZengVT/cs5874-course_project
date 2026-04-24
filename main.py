@@ -8,6 +8,8 @@ import torch.backends.cudnn as cudnn
 from torch.nn import functional as F
 from tqdm import tqdm
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import json
 import geomloss
@@ -188,8 +190,6 @@ def train(_class_, pars):
         loss_distill.append(loss_distill_running)
         total_loss.append(total_loss_running)
 
-        figure = plt.gcf()
-        figure.set_size_inches(8, 12)
         fig, ax = plt.subplots(3, 2, figsize=(8, 12))
         ax[0][0].plot(auroc_px_list)
         ax[0][0].set_title('auroc_px')
